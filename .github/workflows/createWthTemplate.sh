@@ -72,6 +72,10 @@ ${challengesSection}
 ## Prerequisites
 
 ## Repository Contents
+- \`./Coach/Guides\`
+  - Coach's Guide and related files
+- \`./Student/Guides\`
+  - Student's Challenge Guide
 
 ## Contributors
 EOL
