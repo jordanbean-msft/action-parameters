@@ -47,15 +47,38 @@ CreateDirectoryStructure() {
 
 CreateReadmeFile() {
   local -r fullPath=$1
+  local -r numberOfChallenges=$2
+  local -r wthName=$3
   
   if $verbosityArg; then
     echo "Creating $fullPath/README.md..."
   fi
 
-  touch "$fullPath/README.md"
+  local challengesSection=""
+
+  for challengeNumber in $(seq -f "%02g" 1 $numberOfChallenges); do
+    eval challengesSection+=\$\'1. Challenge $challengeNumber: **[Description of challenge]\(Student/Challenge-$challengeNumber.md\)**\\n\\t - Description of challenge\\n\'
+  done
+
+  cat > "$fullPath/README.md" <<EOL
+# What The Hack - ${wthName}
+
+## Introduction
+
+## Learning Objectives
+
+## Challenges
+${challengesSection}
+## Prerequisites
+
+## Repository Contents
+
+## Contributors
+
+EOL
 }
 
-CreateMarkdownFile() {
+CreateChallengeMarkdownFile() {
   local -r fullPath=$1
   local -r prefix=$2
   local -r suffixNumber=$3
@@ -64,7 +87,47 @@ CreateMarkdownFile() {
     echo "Creating $fullPath/$prefix-$suffixNumber.md..."
   fi
 
-  touch "$fullPath/$prefix-$suffixNumber.md"
+  local -r navigationLine=" - **[Home](../README.md)** - "
+
+  cat > "$fullPath/$prefix-$suffixNumber.md" <<EOL
+# Challenge ${suffixNumber}:
+
+${navigationLine}
+
+## Introduction
+
+## Description
+
+## Success Criteria
+
+## Tips
+
+## Learning Resources
+
+EOL
+
+}
+
+CreateSolutionMarkdownFile() {
+  local -r fullPath=$1
+  local -r prefix=$2
+  local -r suffixNumber=$3
+  
+  if $verbosityArg; then
+    echo "Creating $fullPath/$prefix-$suffixNumber.md..."
+  fi
+
+  local -r navigationLine=" - **[Home](../README.md)** - "
+
+  cat > "$fullPath/$prefix-$suffixNumber.md" <<EOL
+# Challenge ${suffixNumber}: Coach's Guide
+
+${navigationLine}
+
+## Notes & Guidance
+
+EOL
+
 }
 
 CreateChallenges() {
@@ -76,7 +139,7 @@ CreateChallenges() {
   fi
 
   for challengeNumber in $(seq -f "%02g" 1 $numberOfChallenges); do
-    CreateMarkdownFile "$fullPath" "Challenge" $challengeNumber
+    CreateChallengeMarkdownFile "$fullPath" "Challenge" $challengeNumber
   done
 }
 
@@ -89,7 +152,7 @@ CreateSolutions() {
   fi
 
   for solutionNumber in $(seq -f "%02g" 1 $numberOfSolutions); do
-    CreateMarkdownFile "$fullPath" "Solution" $solutionNumber
+    CreateSolutionMarkdownFile "$fullPath" "Solution" $solutionNumber
   done
 }
 
@@ -129,12 +192,12 @@ if $verbosityArg; then
   echo "Delete existing directory: $deleteExistingDirectoryArg"
 fi
 
-declare -r wthName="xxx-$nameOfChallengeArg"
+declare -r whatTheHackName="xxx-$nameOfChallengeArg"
 
-declare -r rootPath="$pathArg/$wthName"
+declare -r rootPath="$pathArg/$whatTheHackName"
 
 CreateDirectoryStructure "$rootPath" $deleteExistingDirectoryArg
 
-CreateReadmeFile "$rootPath"
+CreateReadmeFile "$rootPath" $numberOfChallengesArg $whatTheHackName
 
 CreateChallengesAndSolutions "$rootPath" $numberOfChallengesArg
