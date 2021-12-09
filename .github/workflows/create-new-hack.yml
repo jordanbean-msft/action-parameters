@@ -20,8 +20,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git checkout -b ${{ github.event.inputs.hackName }}
-          chmod +x ${{ github.workspace }}/.github/workflows/createWthTemplate.sh
+          git checkout -b xxx-${{ github.event.inputs.hackName }}
       - name: Print Directory Structure
         run: |
            ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
