@@ -19,6 +19,7 @@ jobs:
       - name: Create new branch
         run: |
           git checkout -b ${{ github.event.inputs.hackName }}
+          chmod +x ${{ github.workspace }}/.github/workflows/createWthTemplate.sh
       - name: Print Directory Structure
         run: |
            ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
