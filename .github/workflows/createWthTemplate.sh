@@ -82,12 +82,27 @@ CreateChallengeMarkdownFile() {
   local -r fullPath=$1
   local -r prefix=$2
   local -r suffixNumber=$3
+  local -r numberOfChallenges=$4
   
   if $verbosityArg; then
     echo "Creating $fullPath/$prefix-$suffixNumber.md..."
   fi
 
-  local -r navigationLine=" - **[Home](../README.md)** - "
+  local previousNavigationLink=""
+
+  if [[ $suffixNumber -gt 1 ]]; then
+    local -r previousChallengeNumber=$(printf %02d $((suffixNumber - 1)))
+    previousNavigationLink="[< Previous Challenge](./Challenge-$previousChallengeNumber.md) - "
+  fi
+
+  local nextNavigationLink=""
+  
+  if [[ $suffixNumber -lt $numberOfChallenges ]]; then
+    local -r nextChallengeNumber=$(printf %02d $((suffixNumber + 1)))
+    nextNavigationLink=" - [Next Challenge >](./Challenge-$nextChallengeNumber.md)"
+  fi
+
+  local -r navigationLine="$previousNavigationLink**[Home](../README.md)**$nextNavigationLink"
 
   cat > "$fullPath/$prefix-$suffixNumber.md" <<EOL
 # Challenge ${suffixNumber}:
@@ -139,7 +154,7 @@ CreateChallenges() {
   fi
 
   for challengeNumber in $(seq -f "%02g" 1 $numberOfChallenges); do
-    CreateChallengeMarkdownFile "$fullPath" "Challenge" $challengeNumber
+    CreateChallengeMarkdownFile "$fullPath" "Challenge" $challengeNumber $numberOfChallenges
   done
 }
 
