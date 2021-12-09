@@ -74,19 +74,14 @@ ${challengesSection}
 ## Repository Contents
 
 ## Contributors
-
 EOL
 }
 
-CreateChallengeMarkdownFile() {
-  local -r fullPath=$1
-  local -r prefix=$2
-  local -r suffixNumber=$3
-  local -r numberOfChallenges=$4
+GenerateNavitationLink() {
+  local -r suffixNumber=$1
+  local -r numberOfChallenges=$2
   
-  if $verbosityArg; then
-    echo "Creating $fullPath/$prefix-$suffixNumber.md..."
-  fi
+  local navigationLine=""
 
   local previousNavigationLink=""
 
@@ -104,6 +99,21 @@ CreateChallengeMarkdownFile() {
 
   local -r navigationLine="$previousNavigationLink**[Home](../README.md)**$nextNavigationLink"
 
+  echo $navigationLine
+}
+
+CreateChallengeMarkdownFile() {
+  local -r fullPath=$1
+  local -r prefix=$2
+  local -r suffixNumber=$3
+  local -r numberOfChallenges=$4
+  
+  if $verbosityArg; then
+    echo "Creating $fullPath/$prefix-$suffixNumber.md..."
+  fi
+
+  local -r navigationLine=$(GenerateNavitationLink $suffixNumber $numberOfChallenges)  
+
   cat > "$fullPath/$prefix-$suffixNumber.md" <<EOL
 # Challenge ${suffixNumber}:
 
@@ -118,7 +128,6 @@ ${navigationLine}
 ## Tips
 
 ## Learning Resources
-
 EOL
 
 }
@@ -132,7 +141,7 @@ CreateSolutionMarkdownFile() {
     echo "Creating $fullPath/$prefix-$suffixNumber.md..."
   fi
 
-  local -r navigationLine=" - **[Home](../README.md)** - "
+  local -r navigationLine=$(GenerateNavitationLink $suffixNumber $numberOfChallenges)
 
   cat > "$fullPath/$prefix-$suffixNumber.md" <<EOL
 # Challenge ${suffixNumber}: Coach's Guide
@@ -140,7 +149,6 @@ CreateSolutionMarkdownFile() {
 ${navigationLine}
 
 ## Notes & Guidance
-
 EOL
 
 }
