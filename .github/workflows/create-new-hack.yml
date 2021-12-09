@@ -14,6 +14,8 @@ on:
 jobs:
   createNewWhatTheHackTemplate:
     runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: xxx-${{ github.event.inputs.hackName }}
     steps:
       - uses: actions/checkout@v2
       - name: Make script executable
@@ -23,7 +25,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git checkout -b xxx-${{ github.event.inputs.hackName }}
+          git checkout -b ${{ env.BRANCH_NAME }}
       - name: Print Directory Structure
         run: |
            ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
@@ -36,4 +38,4 @@ jobs:
         run: |
           git add *
           git commit -m 'Created WhatTheHack template stub'
-          git push -u origin ${{ github.event.inputs.hackName}}
+          git push -u origin ${{ env.BRANCH_NAME }}
