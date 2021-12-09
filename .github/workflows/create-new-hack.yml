@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Make script executable
+        run: |
+          chmod +x ${{ github.workspace }}/.github/workflows/createWthTemplate.sh
       - name: Create new branch
         run: |
           git config user.name "GitHub Actions Bot"
